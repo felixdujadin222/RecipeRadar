@@ -48,3 +48,15 @@ export async function getCategories() {
         return [];
     }
 }
+
+// Add this second API function to your existing api.js
+export async function getRandomCocktail() {
+    try {
+        const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php');
+        const data = await response.json();
+        return data.drinks ? data.drinks[0] : null;
+    } catch (error) {
+        console.error('Error fetching cocktail API:', error);
+        return null;
+    }
+}

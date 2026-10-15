@@ -1,4 +1,4 @@
-import { searchRecipes, getRecipesByCategory, getRandomRecipe } from './api.js';
+import { searchRecipes, getRecipesByCategory, getRandomRecipe, getRandomCocktail } from './api.js';
 import { renderRecipes, showLoading } from './ui.js';
 import { getFavorites, saveFavorite, removeFavorite, isFavorite } from './storage.js';
 
@@ -93,5 +93,29 @@ if (favoritesLink) {
         }
         
         displayAndCacheRecipes(favorites);
+    });
+}
+
+// 5. Handle "Drink Pairing" navigation click (Second API)
+const cocktailLink = document.getElementById('cocktail-link');
+if (cocktailLink) {
+    cocktailLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        showLoading();
+        
+        const cocktail = await getRandomCocktail();
+        if (cocktail) {
+            const formattedCocktail = [{
+                idMeal: cocktail.idDrink,
+                strMeal: `Drink Pairing: ${cocktail.strDrink}`,
+                strCategory: cocktail.strCategory,
+                strArea: cocktail.strAlcoholic,
+                strMealThumb: cocktail.strDrinkThumb,
+                strInstructions: cocktail.strInstructions
+            }];
+            displayAndCacheRecipes(formattedCocktail);
+        } else {
+            resultsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6B7280;">Could not fetch drink pairing. Try again!</p>';
+        }
     });
 }
